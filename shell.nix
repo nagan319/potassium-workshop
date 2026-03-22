@@ -74,7 +74,7 @@ in pkgs.mkShell {
     WORKSPACE="$(pwd)"
 
     # ── PYTHONPATH: add local repos in import-priority order ──────────────
-    export PYTHONPATH="$WORKSPACE:$WORKSPACE/artiq:$WORKSPACE/wax/waxx-src:$WORKSPACE/wax/waxa-src:$WORKSPACE/k-exp''${PYTHONPATH:+:$PYTHONPATH}"
+    export PYTHONPATH="$WORKSPACE:$WORKSPACE/artiq:$WORKSPACE/wax/waxx-src:$WORKSPACE/wax/waxa-src:$WORKSPACE/k-exp:$WORKSPACE/k-amo:$WORKSPACE/pyLabLib''${PYTHONPATH:+:$PYTHONPATH}"
 
     # ── Environment variables expected by kexp/config/ip.py ──────────────
     export data="$WORKSPACE/sim-data"
