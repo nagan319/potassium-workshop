@@ -294,3 +294,10 @@ device_db["shuttler0_adc"] = {
     "class": "SimShuttlerADC",
     "arguments": {"spi_device": "shuttler0_spi1"},
 }
+
+# ── Inject _sim_name into every local device's arguments ──────────────────
+# SimTTLOut, SimAD9910, etc. use this for state-change logging so the
+# sim log shows human-readable device names instead of "ttl?".
+for _dev_name, _dev in device_db.items():
+    if _dev.get("type") == "local":
+        _dev.setdefault("arguments", {})["_sim_name"] = _dev_name

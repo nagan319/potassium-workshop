@@ -24,6 +24,15 @@ build/
 # Simulation data directory
 sim-data/
 
+# ARTIQ runtime databases (generated on first run)
+dataset_db.mdb
+dataset_db.mdb-lock
+last_sync_report.txt
+
+# Claude Code internal memory (machine-specific)
+.claude/
+MEMORY.md
+
 # Editor / OS
 .DS_Store
 *.swp

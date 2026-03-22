@@ -173,8 +173,12 @@ in pkgs.mkShell {
 
     # ── Create sim-data directory and run_id file ─────────────────────────
     mkdir -p "$WORKSPACE/sim-data"
+    mkdir -p "$WORKSPACE/sim-data/logs"
     if [ ! -f "$WORKSPACE/sim-data/run_id.py" ]; then
       echo "1" > "$WORKSPACE/sim-data/run_id.py"
+    fi
+    if [ ! -f "$WORKSPACE/sim-data/device_state_config.json" ]; then
+      echo '{"dds": {}, "dac": {}, "ttl": {}}' > "$WORKSPACE/sim-data/device_state_config.json"
     fi
 
     # ── artiq_run wrapper (artiq is on PYTHONPATH, not installed as cmd) ──
@@ -185,10 +189,10 @@ in pkgs.mkShell {
 
     echo ""
     echo "┌─ POTASSIUM-WORKSHOP simulation shell ──────────────────────────┐"
-    echo "│  Python: $(python3 --version 2>&1)"
-    echo "│  arc:    $(python3 -c 'import arc; print(arc.__version__)' 2>/dev/null || echo 'not loaded')"
-    echo "│  data:   $data"
-    echo "│  code:   $code"
+    printf "│  Python: %-54s│\n" "$(python3 --version 2>&1)"
+    printf "│  arc:    %-54s│\n" "$(python3 -c 'import arc; print(arc.__version__)' 2>/dev/null || echo 'not loaded')"
+    printf "│  data:   %-54s│\n" "$data"
+    printf "│  code:   %-54s│\n" "$code"
     echo "│                                                                 │"
     echo "│  Run an experiment:                                             │"
     echo "│    artiq-run --device-db sim/device_db.py \\                   │"
