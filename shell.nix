@@ -5,13 +5,17 @@
 # artiq 8.  Local lab repos are added to PYTHONPATH rather than built as Nix
 # packages, which avoids versioneer / GUI-dep complications.
 #
-# arc-alkali-rydberg-calculator and its dependencies (sympy, lmfit, asteval,
-# uncertainties) are not in nixpkgs-22.11, so they are built here from PyPI
-# sources using fetchurl + buildPythonPackage.
+# Pure-Python PyPI deps (sympy, lmfit, asteval, uncertainties) are fetched as
+# pre-built wheels (format = "wheel") so setup.py never runs and setup_requires
+# like setuptools_scm / future never trigger the network in the Nix sandbox.
+#
+# arc-alkali-rydberg-calculator has a C extension and no Linux wheel, so it is
+# built from the sdist.  Its only setup_requires ("oldest-supported-numpy") is
+# patched out via substituteInPlace; numpy is already present as a build dep.
 #
 # Usage:
 #   nix-shell                          # enter the shell
-#   python3 -m artiq.frontend.artiq_run --device-db sim/device_db.py \
+#   artiq-run --device-db sim/device_db.py \
 #     k-exp/kexp/experiments/test/raman_pulse_test.py
 
 let
@@ -47,60 +51,63 @@ let
     doCheck = false;
   };
 
-  # ── sympy 1.11.1 (required by arc and lmfit) ────────────────────────────
+  # ── sympy 1.11.1 — wheel, no setup.py ───────────────────────────────────
   sympy = py.buildPythonPackage {
     pname = "sympy";
     version = "1.11.1";
-    format = "setuptools";
+    format = "wheel";
     src = pkgs.fetchurl {
-      url = "https://files.pythonhosted.org/packages/5a/36/4667b08bc45131fe655a27b1a112c1730f3244343c53a338f44d730bd6ba/sympy-1.11.1.tar.gz";
-      sha256 = "e32380dce63cb7c0108ed525570092fd45168bdae2faa17e528221ef72e88658";
+      url = "https://files.pythonhosted.org/packages/2d/49/a2d03101e2d28ad528968144831d506344418ef1cc04839acdbe185889c2/sympy-1.11.1-py3-none-any.whl";
+      sha256 = "938f984ee2b1e8eae8a07b884c8b7a1146010040fccddc6539c54f401c8f6fcf";
     };
     propagatedBuildInputs = [ py.mpmath ];
     doCheck = false;
   };
 
-  # ── asteval 0.9.28 (required by lmfit) ──────────────────────────────────
+  # ── asteval 0.9.28 — wheel, avoids setuptools_scm setup_requires ─────────
   asteval = py.buildPythonPackage {
     pname = "asteval";
     version = "0.9.28";
-    format = "setuptools";
+    format = "wheel";
     src = pkgs.fetchurl {
-      url = "https://files.pythonhosted.org/packages/ff/bb/08e3939c0269b3fe6b4396e3c0fec09b8231cb95c0f6cc50c6c2733e0bc0/asteval-0.9.28.tar.gz";
-      sha256 = "91bc7d7826bb9c33f4a5a3ef0a8a50fbd5a4695001944ff1d4e0163c413c0a91";
+      url = "https://files.pythonhosted.org/packages/dd/05/c28af7a26e90a1b1ec10bb7b451a30f745494941d5470131e0ffee075c33/asteval-0.9.28-py3-none-any.whl";
+      sha256 = "c263d25bcc76d5fbeae68b7954b6f7bb16067232b515e4da01e3653e2ec01341";
     };
     doCheck = false;
   };
 
-  # ── uncertainties 3.1.7 (required by lmfit) ─────────────────────────────
+  # ── uncertainties 3.1.7 — wheel, avoids future install_requires ──────────
+  # future is an unconditional runtime Requires-Dist of this version
+  # (used for Py2/3 compat shims); py.future is in nixpkgs-22.11.
   uncertainties = py.buildPythonPackage {
     pname = "uncertainties";
     version = "3.1.7";
-    format = "setuptools";
+    format = "wheel";
     src = pkgs.fetchurl {
-      url = "https://files.pythonhosted.org/packages/9d/22/34b918373b9626a50117abd31c0185b96ad1242e46096d6b0a2ef6dd4303/uncertainties-3.1.7.tar.gz";
-      sha256 = "80111e0839f239c5b233cb4772017b483a0b7a1573a581b92ab7746a35e6faab";
+      url = "https://files.pythonhosted.org/packages/13/f7/9d94eeea3f6475456fb5c6b72d3a3cc652c1ecd342c5491274cbfc9ebaab/uncertainties-3.1.7-py2.py3-none-any.whl";
+      sha256 = "4040ec64d298215531922a68fa1506dc6b1cb86cd7cca8eca848fcfe0f987151";
     };
-    propagatedBuildInputs = [ py.numpy ];
+    propagatedBuildInputs = [ py.numpy py.future ];
     doCheck = false;
   };
 
-  # ── lmfit 1.1.0 (required by arc) ───────────────────────────────────────
+  # ── lmfit 1.1.0 — wheel, no setup.py ────────────────────────────────────
   lmfit = py.buildPythonPackage {
     pname = "lmfit";
     version = "1.1.0";
-    format = "setuptools";
+    format = "wheel";
     src = pkgs.fetchurl {
-      url = "https://files.pythonhosted.org/packages/ce/77/8cc51e8f8397e90653688306c79cb2a91662821df613721a276313ec226c/lmfit-1.1.0.tar.gz";
-      sha256 = "a2755b708ad7bad010178da28f082f55cbee7a084a625b452632e2d77b5391fb";
+      url = "https://files.pythonhosted.org/packages/ea/ab/87059c989f262c88821cdc960944f0830e241c240652eef55e3eb8508e46/lmfit-1.1.0-py3-none-any.whl";
+      sha256 = "29f0540f94b3969a23db2b51abf309f327af8ea3667443ac4cd93d07fdfdb14f";
     };
     propagatedBuildInputs = [ py.numpy py.scipy sympy asteval uncertainties py.matplotlib ];
     doCheck = false;
   };
 
   # ── arc-alkali-rydberg-calculator 3.4.1 ─────────────────────────────────
-  # Version 3.4.1: scipy>=0.18.1, numpy>=1.16.0, sympy>=1.1.1, lmfit>=0.9.0
-  # Compatible with nixpkgs-22.11 (scipy 1.9.1, numpy 1.24.x).
+  # Has a C extension; no Linux wheel on PyPI — must build from sdist.
+  # Patches out setup_requires = ["oldest-supported-numpy"]; numpy is already
+  # present as a nativeBuildInput so the C extension compiles fine.
   arc = py.buildPythonPackage {
     pname = "arc-alkali-rydberg-calculator";
     version = "3.4.1";
@@ -109,6 +116,11 @@ let
       url = "https://files.pythonhosted.org/packages/35/91/ab23e869a8fbe8661e07e9728e650a6e312fc76c23367ebcddb84d8cf1dd/ARC-Alkali-Rydberg-Calculator-3.4.1.tar.gz";
       sha256 = "dee81a906ad6159ebb4926a8339ef3179869646086f3b818bb68462c924c6c50";
     };
+    nativeBuildInputs = [ py.numpy ];
+    preBuild = ''
+      substituteInPlace setup.py \
+        --replace 'setup_requires=["oldest-supported-numpy"]' 'setup_requires=[]'
+    '';
     propagatedBuildInputs = [ py.numpy py.scipy sympy lmfit py.matplotlib ];
     doCheck = false;
   };
@@ -130,6 +142,9 @@ let
     ps.prettytable
     ps.python-dateutil
     ps.levenshtein
+    ps.opencv4
+    ps.lmdb
+    ps.pint
   ]);
 
 in pkgs.mkShell {
@@ -138,10 +153,19 @@ in pkgs.mkShell {
   shellHook = ''
     WORKSPACE="$(pwd)"
 
-    # ── PYTHONPATH: local repos, highest priority first ───────────────────
-    # sim/ provides stub hardware devices (not physics stubs).
-    # arc is installed via Nix; k-amo uses the real arc.
-    export PYTHONPATH="$WORKSPACE:$WORKSPACE/artiq:$WORKSPACE/wax/waxx-src:$WORKSPACE/wax/waxa-src:$WORKSPACE/k-exp:$WORKSPACE/k-amo:$WORKSPACE/pyLabLib''${PYTHONPATH:+:$PYTHONPATH}"
+    # ── PYTHONPATH ────────────────────────────────────────────────────────
+    # NIX_SITE is set by Nix interpolation at eval time to the exact store
+    # path of the pythonEnv site-packages directory.  This makes h5py,
+    # numpy, etc. importable without relying on wrapper-script or
+    # sitecustomize.py ordering, which is fragile when our own
+    # sitecustomize.py is first on sys.path.
+    #
+    # Ordering rules:
+    #   arc     — Nix-installed; appears in NIX_SITE, never shadowed by stubs
+    #   k-amo   — before sim/stubs so real kamo physics always wins
+    #   sim/stubs — before pyLabLib so camera-SDK stubs win over real Andor/pypylon
+    NIX_SITE="${pythonEnv}/${pkgs.python3.sitePackages}"
+    export PYTHONPATH="$WORKSPACE:$WORKSPACE/artiq:$WORKSPACE/wax/waxx-src:$WORKSPACE/wax/waxa-src:$WORKSPACE/k-exp:$WORKSPACE/k-amo:$WORKSPACE/sim/stubs:$WORKSPACE/pyLabLib:$NIX_SITE"
 
     # ── Environment variables expected by kexp/config/ip.py ───────────────
     export data="$WORKSPACE/sim-data"

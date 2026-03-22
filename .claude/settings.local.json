@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pip3 --version)",
+      "Bash(pip3 list:*)",
+      "Bash(pip3 install:*)",
+      "Bash(nix --version)",
+      "Bash(conda info:*)",
+      "Bash(conda env:*)",
+      "Read(//home/aleksandr-n/miniconda3/bin/**)",
+      "Bash(~/miniconda3/bin/conda env:*)",
+      "Bash(~/miniconda3/bin/conda run:*)",
+      "Bash(git commit:*)",
+      "Bash(git clone:*)",
+      "Bash(artiq_run --version)",
+      "Bash(python3:*)",
+      "Read(//home/aleksandr-n/.local/lib/python3.13/site-packages/**)",
+      "Bash(grep -rn class.*Coil /home/aleksandr-n/POTASSIUM-WORKSHOP/wax/)",
+      "WebFetch(domain:pypi.org)",
+      "WebFetch(domain:files.pythonhosted.org)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  }
+}
