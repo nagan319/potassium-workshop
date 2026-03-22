@@ -8,17 +8,30 @@ This is a **meta-workspace** — it contains the Nix environment and simulation 
 
 ## Setup
 
-### Step 1 — Clone this repo and the lab repos
+### Step 1 — Clone this repo
 
 ```bash
 git clone https://github.com/aleksandr-n/POTASSIUM-WORKSHOP.git
 cd POTASSIUM-WORKSHOP
+```
+
+### Step 2 — Clone the lab repos
+
+**Linux:**
+
+```bash
 ./manage_lab.sh
 ```
 
-`manage_lab.sh` clones `artiq`, `k-exp`, `wax`, `k-amo`, `spcm`, and `pyLabLib` from `https://github.com/ucsb-amo/`. Run it again at any time to pull updates.
+**Mac / Windows** — run it inside the container (no bash required on the host):
 
-### Step 2 — Enter the environment
+```bash
+docker run --rm -v "$(pwd):/workspace" ghcr.io/aleksandr-n/potassium-workshop:latest bash manage_lab.sh
+```
+
+Run again at any time to pull updates.
+
+### Step 3 — Enter the environment
 
 **Linux** — install [Nix](https://nixos.org/download) then:
 
