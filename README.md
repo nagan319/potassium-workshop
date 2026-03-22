@@ -8,38 +8,49 @@ This is a **meta-workspace** — it contains the Nix environment and simulation 
 
 ## Setup
 
-### 1. Install Nix
+### Step 1 — Clone this repo and the lab repos
 
 ```bash
-sh <(curl -L https://nixos.org/nix/install) --daemon
-```
-
-### 2. Clone this repo and the lab repos
-
-```bash
-git clone https://github.com/ucsb-amo/POTASSIUM-WORKSHOP.git
+git clone https://github.com/aleksandr-n/POTASSIUM-WORKSHOP.git
 cd POTASSIUM-WORKSHOP
 ./manage_lab.sh
 ```
 
 `manage_lab.sh` clones `artiq`, `k-exp`, `wax`, `k-amo`, `spcm`, and `pyLabLib` from `https://github.com/ucsb-amo/`. Run it again at any time to pull updates.
 
-### 3. Enter the environment
+### Step 2 — Enter the environment
+
+**Linux** — install [Nix](https://nixos.org/download) then:
 
 ```bash
 nix-shell
 ```
 
-This drops you into a shell with Python 3.10, all physics packages (ARC, lmfit, pint, …), and the correct `PYTHONPATH` pointing at the lab repos.
+**Mac / Windows** — install [Docker Desktop](https://www.docker.com/products/docker-desktop/) then:
+
+```bash
+docker pull ghcr.io/aleksandr-n/potassium-workshop:latest
+```
 
 ---
 
 ## Running an Experiment
 
+**Linux (nix-shell):**
+
 ```bash
-# inside nix-shell
 artiq-run --device-db sim/device_db.py \
   k-exp/kexp/experiments/test/raman_pulse_test.py
+```
+
+**Mac / Windows (Docker):**
+
+```bash
+docker run --rm -it \
+  -v "$(pwd):/workspace" \
+  ghcr.io/aleksandr-n/potassium-workshop:latest \
+  python3 k-exp/kexp/experiments/test/raman_pulse_test.py \
+    --device-db sim/device_db.py
 ```
 
 Each run saves a JSON Lines event log to `sim-data/logs/run_NNNNNN_<filename>.jsonl`.
@@ -48,12 +59,23 @@ Each run saves a JSON Lines event log to `sim-data/logs/run_NNNNNN_<filename>.js
 
 ## Viewing Results
 
+**Linux (nix-shell):**
+
 ```bash
-# inside nix-shell
 python3 sim/viewer.py
 ```
 
-Open `http://localhost:8765` in your browser. The viewer shows:
+**Mac / Windows (Docker):**
+
+```bash
+docker run --rm -it \
+  -v "$(pwd):/workspace" \
+  -p 8765:8765 \
+  ghcr.io/aleksandr-n/potassium-workshop:latest \
+  python3 sim/viewer.py
+```
+
+Then open `http://localhost:8765` in your browser. The viewer shows:
 
 - **TTL** — digital output states vs time, grouped by system (Raman, Imaging, Cooling, …)
 - **DDS** — frequency, amplitude, and attenuation vs time per channel
@@ -85,8 +107,8 @@ Constraints appear as warnings in the viewer and do **not** affect the SHA-256 c
 
 ```
 POTASSIUM-WORKSHOP/
-├── shell.nix            # Nix shell — reproducible Python environment
-├── flake.nix            # Nix flake (alternative entry point, also builds Docker image)
+├── shell.nix            # Nix shell — reproducible Python environment (Linux)
+├── flake.nix            # Nix flake — also builds the Docker image
 ├── manage_lab.sh        # Clone/update the 6 lab repos from ucsb-amo/
 ├── sitecustomize.py     # Python startup patches (ARTIQ sim, autosave, MonitorClient stub)
 ├── SIM_ASSUMPTIONS.md   # Every assumption made by the simulation HAL
