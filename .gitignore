@@ -1,0 +1,32 @@
+# Lab repositories (managed via manage_lab.sh)
+artiq/
+k-amo/
+k-exp/
+pyLabLib/
+spcm/
+wax/
+
+# sipyco dependency (installed separately)
+sipyco/
+
+# Python environments
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Simulation data directory
+sim-data/
+
+# Editor / OS
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
