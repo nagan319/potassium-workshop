@@ -38,7 +38,7 @@ Run the `docker run` line again at any time to pull updates.
 ### 4. Run an experiment
 
 ```bash
-docker run --rm -it -v "$(pwd):/workspace" ghcr.io/nagan319/potassium-workshop:latest python3 k-exp/kexp/experiments/test/raman_pulse_test.py --device-db sim/device_db.py
+docker run --rm -it -v "$(pwd):/workspace" ghcr.io/nagan319/potassium-workshop:latest python3 -m artiq.frontend.artiq_run --device-db sim/device_db.py k-exp/kexp/experiments/test/raman_pulse_test.py
 ```
 
 ### 5. View results
