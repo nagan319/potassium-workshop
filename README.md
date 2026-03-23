@@ -11,7 +11,7 @@ This is a **meta-workspace** — it contains the Nix environment and simulation 
 ### 1. Install Nix
 
 ```bash
-sh <(curl -L https://nixos.org/nix/install) --daemon
+bash <(curl -L https://nixos.org/nix/install) --daemon
 ```
 
 ### 2. Clone this repo and the lab repos
