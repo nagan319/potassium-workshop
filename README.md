@@ -66,7 +66,7 @@ docker pull ghcr.io/nagan319/potassium-workshop:latest
 ```
 
 ```bash
-docker run --rm -v "$(pwd):/workspace" ghcr.io/nagan319/potassium-workshop:latest bash manage_lab.sh
+docker run --rm -v "$(pwd):/workspace" -e GIT_CONFIG_PARAMETERS="'http.sslBackend=openssl' 'http.sslVerify=false'" ghcr.io/nagan319/potassium-workshop:latest bash manage_lab.sh
 ```
 
 Run the `docker run` line again at any time to pull updates.
