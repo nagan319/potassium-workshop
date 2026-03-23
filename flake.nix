@@ -160,7 +160,7 @@
       #!${pkgs.bash}/bin/bash
       WORKSPACE="''${WORKSPACE:-/workspace}"
       NIX_SITE="${pythonEnv}/${pkgs.python3.sitePackages}"
-      export PYTHONPATH="$WORKSPACE:$WORKSPACE/artiq:$WORKSPACE/wax/waxx-src:$WORKSPACE/wax/waxa-src:$WORKSPACE/k-exp:$WORKSPACE/k-amo:$WORKSPACE/sim/stubs:$WORKSPACE/pyLabLib:$NIX_SITE"
+      export PYTHONPATH="$WORKSPACE/sim/stubs:$WORKSPACE:$WORKSPACE/artiq:$WORKSPACE/wax/waxx-src:$WORKSPACE/wax/waxa-src:$WORKSPACE/k-exp:$WORKSPACE/k-amo:$WORKSPACE/pyLabLib:$NIX_SITE"
       export data="$WORKSPACE/sim-data"
       export code="$WORKSPACE"
       mkdir -p "$WORKSPACE/sim-data/logs"
@@ -212,7 +212,7 @@
       WORKSPACE="$(pwd)"
 
       NIX_SITE="${pythonEnv}/${pkgs.python3.sitePackages}"
-      export PYTHONPATH="$WORKSPACE:$WORKSPACE/artiq:$WORKSPACE/wax/waxx-src:$WORKSPACE/wax/waxa-src:$WORKSPACE/k-exp:$WORKSPACE/k-amo:$WORKSPACE/sim/stubs:$WORKSPACE/pyLabLib:$NIX_SITE"
+      export PYTHONPATH="$WORKSPACE/sim/stubs:$WORKSPACE:$WORKSPACE/artiq:$WORKSPACE/wax/waxx-src:$WORKSPACE/wax/waxa-src:$WORKSPACE/k-exp:$WORKSPACE/k-amo:$WORKSPACE/pyLabLib:$NIX_SITE"
 
       export data="$WORKSPACE/sim-data"
       export code="$WORKSPACE"

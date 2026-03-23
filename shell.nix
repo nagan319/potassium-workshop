@@ -165,7 +165,7 @@ in pkgs.mkShell {
     #   k-amo   — before sim/stubs so real kamo physics always wins
     #   sim/stubs — before pyLabLib so camera-SDK stubs win over real Andor/pypylon
     NIX_SITE="${pythonEnv}/${pkgs.python3.sitePackages}"
-    export PYTHONPATH="$WORKSPACE:$WORKSPACE/artiq:$WORKSPACE/wax/waxx-src:$WORKSPACE/wax/waxa-src:$WORKSPACE/k-exp:$WORKSPACE/k-amo:$WORKSPACE/sim/stubs:$WORKSPACE/pyLabLib:$NIX_SITE"
+    export PYTHONPATH="$WORKSPACE/sim/stubs:$WORKSPACE:$WORKSPACE/artiq:$WORKSPACE/wax/waxx-src:$WORKSPACE/wax/waxa-src:$WORKSPACE/k-exp:$WORKSPACE/k-amo:$WORKSPACE/pyLabLib:$NIX_SITE"
 
     # ── Environment variables expected by kexp/config/ip.py ───────────────
     export data="$WORKSPACE/sim-data"
