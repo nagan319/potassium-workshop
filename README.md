@@ -33,8 +33,7 @@ nix-shell
 ### 4. Run an experiment
 
 ```bash
-artiq-run --device-db sim/device_db.py \
-  k-exp/kexp/experiments/test/raman_pulse_test.py
+artiq-run --device-db sim/device_db.py k-exp/kexp/experiments/test/raman_pulse_test.py
 ```
 
 ### 5. View results
@@ -64,11 +63,10 @@ cd POTASSIUM-WORKSHOP
 
 ```bash
 docker pull ghcr.io/nagan319/potassium-workshop:latest
+```
 
-docker run --rm \
-  -v "$(pwd):/workspace" \
-  ghcr.io/nagan319/potassium-workshop:latest \
-  bash manage_lab.sh
+```bash
+docker run --rm -v "$(pwd):/workspace" ghcr.io/nagan319/potassium-workshop:latest bash manage_lab.sh
 ```
 
 Run the `docker run` line again at any time to pull updates.
@@ -76,21 +74,13 @@ Run the `docker run` line again at any time to pull updates.
 ### 4. Run an experiment
 
 ```bash
-docker run --rm -it \
-  -v "$(pwd):/workspace" \
-  ghcr.io/nagan319/potassium-workshop:latest \
-  python3 k-exp/kexp/experiments/test/raman_pulse_test.py \
-    --device-db sim/device_db.py
+docker run --rm -it -v "$(pwd):/workspace" ghcr.io/nagan319/potassium-workshop:latest python3 k-exp/kexp/experiments/test/raman_pulse_test.py --device-db sim/device_db.py
 ```
 
 ### 5. View results
 
 ```bash
-docker run --rm -it \
-  -v "$(pwd):/workspace" \
-  -p 8765:8765 \
-  ghcr.io/nagan319/potassium-workshop:latest \
-  python3 sim/viewer.py
+docker run --rm -it -v "$(pwd):/workspace" -p 8765:8765 ghcr.io/nagan319/potassium-workshop:latest python3 sim/viewer.py
 ```
 
 Open `http://localhost:8765` in your browser.
