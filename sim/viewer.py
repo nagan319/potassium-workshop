@@ -771,7 +771,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--port", type=int, default=8756)
+    parser.add_argument("--port", type=int, default=8765)
     parser.add_argument("--no-browser", action="store_true")
     args = parser.parse_args()
 
@@ -779,8 +779,8 @@ def main():
         print(f"[viewer] {LOGS_DIR} not found — run an experiment first.")
         sys.exit(1)
 
-    server = HTTPServer(("127.0.0.1", args.port), Handler)
-    url = f"http://127.0.0.1:{args.port}/"
+    server = HTTPServer(("0.0.0.0", args.port), Handler)
+    url = f"http://localhost:{args.port}/"
     print(f"[viewer] {url}  (Ctrl-C to quit)")
     if not args.no_browser:
         webbrowser.open(url)
