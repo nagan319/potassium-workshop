@@ -1,0 +1,38 @@
+#!/bin/bash
+# Shorthand for common Docker operations.
+# Usage: ./run <command> [args]
+
+IMAGE="ghcr.io/nagan319/potassium-workshop:latest"
+WORKSPACE="$(pwd)"
+
+case "$1" in
+  experiment|exp)
+    shift
+    docker run --rm -it -v "$WORKSPACE:/workspace" "$IMAGE" \
+      python3 -m artiq.frontend.artiq_run --device-db sim/device_db.py "$@"
+    ;;
+  viewer)
+    docker run --rm -it -v "$WORKSPACE:/workspace" -p 8765:8765 "$IMAGE" \
+      python3 sim/viewer.py --no-browser
+    ;;
+  shell)
+    docker run --rm -it -v "$WORKSPACE:/workspace" "$IMAGE" bash
+    ;;
+  lab)
+    docker run --rm -v "$WORKSPACE:/workspace" \
+      -e GIT_CONFIG_PARAMETERS="'http.sslBackend=openssl' 'http.sslVerify=false'" \
+      "$IMAGE" bash manage_lab.sh
+    ;;
+  pull)
+    docker pull "$IMAGE"
+    ;;
+  *)
+    echo "Usage: ./run <command> [args]"
+    echo ""
+    echo "  ./run experiment k-exp/kexp/experiments/test/raman_pulse_test.py"
+    echo "  ./run viewer          # open http://localhost:8765"
+    echo "  ./run shell           # interactive bash inside container"
+    echo "  ./run lab             # clone/update lab repos"
+    echo "  ./run pull            # pull latest image from GHCR"
+    ;;
+esac

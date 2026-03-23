@@ -14,6 +14,8 @@ This is a **meta-workspace** — it contains the simulation HAL and environment 
 - **Linux (Ubuntu/Debian):** follow [docs.docker.com/engine/install/ubuntu](https://docs.docker.com/engine/install/ubuntu/)
 - **Mac / Windows:** install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and make sure it is running
 
+> **Linux note:** if you get a permission error on `docker` commands, add yourself to the docker group (`sudo usermod -aG docker $USER`) and log out and back in.
+
 ### 2. Clone this repo
 
 ```bash
@@ -24,40 +26,61 @@ cd POTASSIUM-WORKSHOP
 ### 3. Pull the image and clone the lab repos
 
 ```bash
-docker pull ghcr.io/nagan319/potassium-workshop:latest
+./run pull
+./run lab
 ```
 
-```bash
-docker run --rm -v "$(pwd):/workspace" -e GIT_CONFIG_PARAMETERS="'http.sslBackend=openssl' 'http.sslVerify=false'" ghcr.io/nagan319/potassium-workshop:latest bash manage_lab.sh
-```
-
-Run the `docker run` line again at any time to pull updates.
-
-> **Linux note:** if you get a permission error on `docker run`, either add yourself to the docker group (`sudo usermod -aG docker $USER`, then log out and back in) or prefix the command with `sudo`.
-
-### 4. Run an experiment
-
-```bash
-docker run --rm -it -v "$(pwd):/workspace" ghcr.io/nagan319/potassium-workshop:latest python3 -m artiq.frontend.artiq_run --device-db sim/device_db.py k-exp/kexp/experiments/test/raman_pulse_test.py
-```
-
-### 5. View results
-
-```bash
-docker run --rm -it -v "$(pwd):/workspace" -p 8765:8765 ghcr.io/nagan319/potassium-workshop:latest python3 sim/viewer.py
-```
-
-Open `http://localhost:8765` in your browser.
+Run `./run lab` again at any time to pull updates from the lab repos.
 
 ---
 
-## Viewer
+## Running Experiments
 
-- **TTL** — digital output states vs time, grouped by system (Raman, Imaging, Cooling, …)
-- **DDS** — frequency, amplitude, and attenuation vs time per channel
-- **DAC** — Zotino voltage outputs vs time
-- **SHA-256 checksum** — fingerprint of raw FPGA output events (click to copy)
-- **Constraint warnings** — out-of-range events if `sim/constraints.py` has entries
+```bash
+./run experiment k-exp/kexp/experiments/test/raman_pulse_test.py
+```
+
+Each run saves a JSON Lines event log to `sim-data/logs/run_NNNNNN_<filename>.jsonl`.
+
+## Viewing Results
+
+```bash
+./run viewer
+```
+
+Open `http://localhost:8765`. The viewer shows TTL/DDS/DAC outputs vs time, a SHA-256 checksum of the FPGA event log, and any constraint warnings.
+
+## Interactive Shell
+
+```bash
+./run shell
+```
+
+Opens a bash shell inside the container with the full Python environment and PYTHONPATH set up.
+
+---
+
+## Development
+
+This project uses [Claude Code](https://claude.ai/code) as its AI development assistant. `CLAUDE.md` and `SIM_ASSUMPTIONS.md` provide the context Claude needs to work effectively in this codebase.
+
+To start a development session after cloning:
+
+```bash
+# Install Claude Code (one-time)
+npm install -g @anthropic-ai/claude-code
+
+# Start Claude in the workspace
+claude
+```
+
+Claude has access to all workspace files and can run `docker exec` commands into a running container. For interactive debugging, start a named container first:
+
+```bash
+docker run -d --name potassium --rm -it -v "$(pwd):/workspace" ghcr.io/nagan319/potassium-workshop:latest bash
+# ... work with Claude ...
+docker stop potassium
+```
 
 ---
 
@@ -83,6 +106,7 @@ Constraints appear as warnings in the viewer and do **not** affect the SHA-256 c
 
 ```
 POTASSIUM-WORKSHOP/
+├── run                  # Shorthand script for common Docker operations
 ├── flake.nix            # Nix flake — builds the Docker image
 ├── shell.nix            # Nix shell — alternative for systems where Nix is available
 ├── manage_lab.sh        # Clone/update the 6 lab repos from ucsb-amo/
@@ -96,7 +120,7 @@ POTASSIUM-WORKSHOP/
     └── viewer.py        # Web-based FPGA output viewer (Plotly.js, stdlib HTTP)
 ```
 
-Lab repos (not in this repo, cloned by `manage_lab.sh`):
+Lab repos (not in this repo, cloned by `./run lab`):
 
 ```
 artiq/   k-exp/   wax/   k-amo/   spcm/   pyLabLib/
