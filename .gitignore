@@ -1,10 +1,10 @@
 # Lab repositories (managed via manage_lab.sh)
-artiq/
-k-amo/
-k-exp/
-pyLabLib/
-spcm/
-wax/
+/artiq/
+/k-amo/
+/k-exp/
+/pyLabLib/
+/spcm/
+/wax/
 
 # sipyco dependency (installed separately)
 sipyco/
