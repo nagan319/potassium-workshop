@@ -9,6 +9,10 @@ REPOS=(
     "pyLabLib"
     "wax"
 )
+
+# Per-repo branch overrides (default: clone the repo's default branch)
+declare -A REPO_BRANCH
+REPO_BRANCH["artiq"]="release-8-ucsb"
 BASE_URL="https://github.com/ucsb-amo"
 LOG_FILE="last_sync_report.txt"
 
@@ -34,7 +38,11 @@ for repo in "${REPOS[@]}"; do
         cd ..
     else
         echo "First time setup: Cloning $repo..."
-        git clone "$BASE_URL/$repo.git"
+        if [ -n "${REPO_BRANCH[$repo]}" ]; then
+            git clone -b "${REPO_BRANCH[$repo]}" "$BASE_URL/$repo.git"
+        else
+            git clone "$BASE_URL/$repo.git"
+        fi
         echo "[NEW] Cloned $repo" >> $LOG_FILE
     fi
 done
