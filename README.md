@@ -6,57 +6,74 @@ This is a **meta-workspace** — it contains the Nix environment and simulation 
 
 ---
 
-## Setup
+## Linux
 
-### Step 1 — Clone this repo
+### 1. Install Nix
+
+```bash
+sh <(curl -L https://nixos.org/nix/install) --daemon
+```
+
+### 2. Clone this repo and the lab repos
 
 ```bash
 git clone https://github.com/aleksandr-n/POTASSIUM-WORKSHOP.git
 cd POTASSIUM-WORKSHOP
-```
-
-### Step 2 — Clone the lab repos
-
-**Linux:**
-
-```bash
 ./manage_lab.sh
 ```
 
-**Mac / Windows** — run it inside the container (no bash required on the host):
+Run `./manage_lab.sh` again at any time to pull updates.
 
-```bash
-docker run --rm -v "$(pwd):/workspace" ghcr.io/aleksandr-n/potassium-workshop:latest bash manage_lab.sh
-```
-
-Run again at any time to pull updates.
-
-### Step 3 — Enter the environment
-
-**Linux** — install [Nix](https://nixos.org/download) then:
+### 3. Enter the environment
 
 ```bash
 nix-shell
 ```
 
-**Mac / Windows** — install [Docker Desktop](https://www.docker.com/products/docker-desktop/) then:
-
-```bash
-docker pull ghcr.io/aleksandr-n/potassium-workshop:latest
-```
-
----
-
-## Running an Experiment
-
-**Linux (nix-shell):**
+### 4. Run an experiment
 
 ```bash
 artiq-run --device-db sim/device_db.py \
   k-exp/kexp/experiments/test/raman_pulse_test.py
 ```
 
-**Mac / Windows (Docker):**
+### 5. View results
+
+```bash
+python3 sim/viewer.py
+```
+
+Open `http://localhost:8765` in your browser.
+
+---
+
+## Mac / Windows
+
+### 1. Install Docker Desktop
+
+Download and install [Docker Desktop](https://www.docker.com/products/docker-desktop/). Make sure it is running before continuing.
+
+### 2. Clone this repo
+
+```bash
+git clone https://github.com/aleksandr-n/POTASSIUM-WORKSHOP.git
+cd POTASSIUM-WORKSHOP
+```
+
+### 3. Pull the image and clone the lab repos
+
+```bash
+docker pull ghcr.io/aleksandr-n/potassium-workshop:latest
+
+docker run --rm \
+  -v "$(pwd):/workspace" \
+  ghcr.io/aleksandr-n/potassium-workshop:latest \
+  bash manage_lab.sh
+```
+
+Run the `docker run` line again at any time to pull updates.
+
+### 4. Run an experiment
 
 ```bash
 docker run --rm -it \
@@ -66,19 +83,7 @@ docker run --rm -it \
     --device-db sim/device_db.py
 ```
 
-Each run saves a JSON Lines event log to `sim-data/logs/run_NNNNNN_<filename>.jsonl`.
-
----
-
-## Viewing Results
-
-**Linux (nix-shell):**
-
-```bash
-python3 sim/viewer.py
-```
-
-**Mac / Windows (Docker):**
+### 5. View results
 
 ```bash
 docker run --rm -it \
@@ -88,7 +93,13 @@ docker run --rm -it \
   python3 sim/viewer.py
 ```
 
-Then open `http://localhost:8765` in your browser. The viewer shows:
+Open `http://localhost:8765` in your browser.
+
+---
+
+## Viewer
+
+Both paths open the same web viewer at `http://localhost:8765`:
 
 - **TTL** — digital output states vs time, grouped by system (Raman, Imaging, Cooling, …)
 - **DDS** — frequency, amplitude, and attenuation vs time per channel
