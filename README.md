@@ -17,7 +17,7 @@ sh <(curl -L https://nixos.org/nix/install) --daemon
 ### 2. Clone this repo and the lab repos
 
 ```bash
-git clone https://github.com/aleksandr-n/POTASSIUM-WORKSHOP.git
+git clone https://github.com/nagan319/POTASSIUM-WORKSHOP.git
 cd POTASSIUM-WORKSHOP
 ./manage_lab.sh
 ```
@@ -56,18 +56,18 @@ Download and install [Docker Desktop](https://www.docker.com/products/docker-des
 ### 2. Clone this repo
 
 ```bash
-git clone https://github.com/aleksandr-n/POTASSIUM-WORKSHOP.git
+git clone https://github.com/nagan319/POTASSIUM-WORKSHOP.git
 cd POTASSIUM-WORKSHOP
 ```
 
 ### 3. Pull the image and clone the lab repos
 
 ```bash
-docker pull ghcr.io/aleksandr-n/potassium-workshop:latest
+docker pull ghcr.io/nagan319/potassium-workshop:latest
 
 docker run --rm \
   -v "$(pwd):/workspace" \
-  ghcr.io/aleksandr-n/potassium-workshop:latest \
+  ghcr.io/nagan319/potassium-workshop:latest \
   bash manage_lab.sh
 ```
 
@@ -78,7 +78,7 @@ Run the `docker run` line again at any time to pull updates.
 ```bash
 docker run --rm -it \
   -v "$(pwd):/workspace" \
-  ghcr.io/aleksandr-n/potassium-workshop:latest \
+  ghcr.io/nagan319/potassium-workshop:latest \
   python3 k-exp/kexp/experiments/test/raman_pulse_test.py \
     --device-db sim/device_db.py
 ```
@@ -89,7 +89,7 @@ docker run --rm -it \
 docker run --rm -it \
   -v "$(pwd):/workspace" \
   -p 8765:8765 \
-  ghcr.io/aleksandr-n/potassium-workshop:latest \
+  ghcr.io/nagan319/potassium-workshop:latest \
   python3 sim/viewer.py
 ```
 
